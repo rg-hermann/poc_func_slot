@@ -8,11 +8,18 @@ on:
   workflow_dispatch:
 
 jobs:
-  deploy:
+  deploy_app:
+    if: ${{ github.event_name == 'push' && contains(github.event.head_commit.message, 'app/') }}
     uses: ./.github/workflows/reusable-deploy.yml
     with:
-      azure_credentials: ${{ secrets.AZURE_CREDENTIALS }}
       resource_group: "my-resource-group"
       function_app_name: "my-function-app"
-      terraform_directory: "infraestrutura/"
       app_directory: "app/"
+    secrets: inherit
+
+  deploy_infra:
+    if: ${{ github.event_name == 'push' && contains(github.event.head_commit.message, 'infraestrutura/') }}
+    uses: ./.github/workflows/reusable-terraform.yml
+    with:
+      terraform_directory: "infraestrutura/"
+    secrets: inherit

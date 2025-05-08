@@ -3,16 +3,10 @@ name: Reusable Deploy Workflow
 on:
   workflow_call:
     inputs:
-      azure_credentials:
-        required: true
-        type: string
       resource_group:
         required: true
         type: string
       function_app_name:
-        required: true
-        type: string
-      terraform_directory:
         required: true
         type: string
       app_directory:
@@ -23,17 +17,8 @@ on:
         type: string
 
 jobs:
-  terraform:
-    name: Terraform Apply
-    uses: ./.github/workflows/reusable-terraform.yml
-    with:
-      azure_credentials: ${{ inputs.azure_credentials }}
-      terraform_directory: ${{ inputs.terraform_directory }}
-      environment: ${{ inputs.environment }}
-
   deploy:
     name: Deploy Function App
-    needs: terraform
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
@@ -42,12 +27,12 @@ jobs:
       - name: Setup Azure CLI
         uses: azure/login@v1
         with:
-          creds: ${{ inputs.azure_credentials }}
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
 
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '16'
+          node-version: "16"
 
       - name: Install Dependencies
         run: |
