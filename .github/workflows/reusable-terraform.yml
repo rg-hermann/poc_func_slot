@@ -1,0 +1,49 @@
+name: Reusable Terraform Workflow
+
+on:
+  workflow_call:
+    inputs:
+      azure_credentials:
+        required: true
+        type: string
+      terraform_directory:
+        required: true
+        type: string
+      environment:
+        required: true
+        type: string
+
+jobs:
+  terraform:
+    name: Terraform Workflow
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.11.0
+
+      - name: Initialize Terraform with Backend
+        run: terraform init --backend-config=${{ inputs.environment }}-backend.hcl
+        working-directory: ${{ inputs.terraform_directory }}
+
+      - name: Create and Select Workspace
+        run: |
+          terraform workspace new ${{ inputs.environment }} || true
+          terraform workspace select ${{ inputs.environment }}
+        working-directory: ${{ inputs.terraform_directory }}
+
+      - name: Validate Terraform Configuration
+        run: terraform validate
+        working-directory: ${{ inputs.terraform_directory }}
+
+      - name: Plan Terraform Changes
+        run: terraform plan -var-file=environments/${{ inputs.environment }}.tfvars
+        working-directory: ${{ inputs.terraform_directory }}
+
+      - name: Apply Terraform Changes
+        run: terraform apply -auto-approve -var-file=${{ inputs.environment }}.tfvars
+        working-directory: ${{ inputs.terraform_directory }}

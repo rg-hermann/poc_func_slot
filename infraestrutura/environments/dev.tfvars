@@ -1,0 +1,7 @@
+subscription_id         = "7bd5af16-7c8f-4e56-ab1a-65f83ab286ab"
+environment             = "dev"
+storage_account_name    = "storageaccountdevpoc"
+app_service_plan_name   = "appserviceplan-dev-poc"
+function_app_name       = "functionapp-dev-poc"
+resource_group_name     = "rg-dev-poc"
+location                = "East US"

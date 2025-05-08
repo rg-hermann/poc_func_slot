@@ -1,0 +1,73 @@
+name: Reusable Deploy Workflow
+
+on:
+  workflow_call:
+    inputs:
+      azure_credentials:
+        required: true
+        type: string
+      resource_group:
+        required: true
+        type: string
+      function_app_name:
+        required: true
+        type: string
+      terraform_directory:
+        required: true
+        type: string
+      app_directory:
+        required: true
+        type: string
+      environment:
+        required: true
+        type: string
+
+jobs:
+  terraform:
+    name: Terraform Apply
+    uses: ./.github/workflows/reusable-terraform.yml
+    with:
+      azure_credentials: ${{ inputs.azure_credentials }}
+      terraform_directory: ${{ inputs.terraform_directory }}
+      environment: ${{ inputs.environment }}
+
+  deploy:
+    name: Deploy Function App
+    needs: terraform
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Setup Azure CLI
+        uses: azure/login@v1
+        with:
+          creds: ${{ inputs.azure_credentials }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+
+      - name: Install Dependencies
+        run: |
+          cd ${{ inputs.app_directory }}
+          npm install
+
+      - name: Build Application
+        run: |
+          cd ${{ inputs.app_directory }}
+          npm run build
+
+      - name: Create ZIP File
+        run: |
+          cd ${{ inputs.app_directory }}
+          mkdir -p dist
+          zip -r dist/app.zip .
+
+      - name: Deploy to Azure Function App
+        run: |
+          az functionapp deployment source config-zip \
+            --resource-group ${{ inputs.resource_group }} \
+            --name ${{ inputs.function_app_name }} \
+            --src ${{ inputs.app_directory }}/dist/app.zip
