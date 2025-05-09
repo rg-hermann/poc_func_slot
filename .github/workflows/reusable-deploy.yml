@@ -32,7 +32,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: "16"
+          node-version: "22"
 
       - name: Install Dependencies
         run: |
@@ -44,15 +44,29 @@ jobs:
           cd ${{ inputs.app_directory }}
           npm run build
 
+      - name: Verify Storage Account Access
+        run: |
+          az storage account show \
+            --name "storageaccountdevpoc" \
+            --resource-group ${{ inputs.resource_group }}
+
       - name: Create ZIP File
         run: |
           cd ${{ inputs.app_directory }}
           mkdir -p dist
           zip -r dist/app.zip .
 
-      - name: Deploy to Azure Function App
+      - name: Deploy to Staging Slot
         run: |
           az functionapp deployment source config-zip \
             --resource-group ${{ inputs.resource_group }} \
             --name ${{ inputs.function_app_name }} \
+            --slot staging \
             --src ${{ inputs.app_directory }}/dist/app.zip
+  
+      - name: Swap Staging to Production
+        run: |
+          az functionapp deployment slot swap \
+            --resource-group ${{ inputs.resource_group }} \
+            --name ${{ inputs.function_app_name }} \
+            --slot staging

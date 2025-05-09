@@ -55,6 +55,10 @@ Este projeto é uma prova de conceito para a criação e implantação de uma Az
 
 4. Acesse a função em `http://localhost:7071/api/<nome-da-função>`.
 
+## Slots de Deploy
+
+Este projeto utiliza slots de deploy para realizar validações em um ambiente intermediário antes de promover para produção. O slot de staging é utilizado para deploys e validações, e após a aprovação, o slot é trocado com o de produção.
+
 ## Limpeza
 
 Para destruir os recursos provisionados:
