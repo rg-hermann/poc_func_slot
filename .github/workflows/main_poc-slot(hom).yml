@@ -68,6 +68,13 @@ jobs:
           client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_DEDB6917F1374E5BBBC635228FD2FF2B }}
           tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_8590CB18DA014D4481A8609E5FD1EFA0 }}
           subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_278B618E18A94411B6454B9301093E57 }}
+      - name: Set AzureWebJobsStorage app setting
+        run: |
+          az functionapp config appsettings set \
+            --name 'poc-slot' \
+            --slot 'hom' \
+            --resource-group 'pocslot' \
+            --settings AzureWebJobsStorage=${{ secrets.AZURE_STORAGE_CONNECTION_STRING }}
 
       - name: 'Run Azure Functions Action'
         uses: Azure/functions-action@v1
