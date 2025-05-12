@@ -62,11 +62,8 @@ jobs:
       - name: ls
         run: ls -la
 
-      - name: ls app
-        run: ls -la app
-
       - name: Unzip artifact for deployment
-        run: unzip app/release.zip -d app/
+        run: unzip release.zip -d app/
 
       - name: Login to Azure
         uses: azure/login@v2
