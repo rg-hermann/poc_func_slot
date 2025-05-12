@@ -46,7 +46,7 @@ jobs:
           name: node-app
           path: app/release.zip
 
-  deploy:
+  deploy-slot-hom:
     runs-on: ubuntu-latest
     needs: [build]
     permissions:
@@ -81,5 +81,47 @@ jobs:
         id: fa
         with:
           app-name: 'poc-slot'
-          slot-name: 'Production'
+          slot-name: 'hom'
           package: ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}
+
+      # - name: Swap Slots (hom -> production)
+      #   if: ${{ success() }}
+      #   run: |
+      #     az functionapp deployment slot swap \
+      #       --name 'poc-slot' \
+      #       --resource-group 'pocslot' \
+      #       --slot 'hom' \
+      #       --target-slot 'production'
+
+
+  deploy-prd:
+    runs-on: ubuntu-latest
+    needs: [deploy-slot-hom]
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+
+      - name: Login to Azure
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_ECB54451D1D74ED9BCCD0828B36811FC }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_FECDFCAE7A11490C9A804F716780CBF2 }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_BC90065897794AAB8AA280B24CEE7572 }}
+
+      # - name: Login to Azure HOM
+      #   uses: azure/login@v2
+      #   with:
+      #     client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_5FE3CA448F1844DCACFCF962DF88666E }}
+      #     tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_29C903C166644CA597572C51816BB298 }}
+      #     subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_65A4088BA53E429A83BD9E92DDD1FD72 }}
+
+      - name: Swap Slots (hom -> production)
+        if: ${{ success() }}
+        run: |
+          az functionapp deployment slot swap \
+            --name 'poc-slot' \
+            --resource-group 'pocslot' \
+            --slot 'hom' \
+            --target-slot 'production'
