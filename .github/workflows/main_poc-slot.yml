@@ -62,19 +62,19 @@ jobs:
       - name: Unzip artifact for deployment
         run: unzip release.zip -d app/
 
-      # - name: Login to Azure
-      #   uses: azure/login@v2
-      #   with:
-      #     client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_ECB54451D1D74ED9BCCD0828B36811FC }}
-      #     tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_FECDFCAE7A11490C9A804F716780CBF2 }}
-      #     subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_BC90065897794AAB8AA280B24CEE7572 }}
-
-      - name: Login to Azure HOM
+      - name: Login to Azure
         uses: azure/login@v2
         with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_5FE3CA448F1844DCACFCF962DF88666E }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_29C903C166644CA597572C51816BB298 }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_65A4088BA53E429A83BD9E92DDD1FD72 }}
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_ECB54451D1D74ED9BCCD0828B36811FC }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_FECDFCAE7A11490C9A804F716780CBF2 }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_BC90065897794AAB8AA280B24CEE7572 }}
+
+      # - name: Login to Azure HOM
+      #   uses: azure/login@v2
+      #   with:
+      #     client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_5FE3CA448F1844DCACFCF962DF88666E }}
+      #     tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_29C903C166644CA597572C51816BB298 }}
+      #     subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_65A4088BA53E429A83BD9E92DDD1FD72 }}
 
       - name: 'Run Azure Functions Action'
         uses: Azure/functions-action@v1
