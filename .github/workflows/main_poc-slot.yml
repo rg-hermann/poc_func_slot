@@ -84,8 +84,6 @@ jobs:
           echo "- Test URL (Production): [https://poc-slot.azurewebsites.net/api/pocslot](https://poc-slot.azurewebsites.net/api/pocslot)" >> $GITHUB_STEP_SUMMARY
 
   deploy-prd:
-    environment:
-      name: prd
     runs-on: ubuntu-latest
     needs: [deploy-slot-hom]
     permissions:
