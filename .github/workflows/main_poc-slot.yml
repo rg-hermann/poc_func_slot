@@ -81,5 +81,5 @@ jobs:
         id: fa
         with:
           app-name: 'poc-slot'
-          slot-name: 'hom'
+          slot-name: 'Production'
           package: ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}
