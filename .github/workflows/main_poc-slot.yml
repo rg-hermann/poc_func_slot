@@ -59,6 +59,12 @@ jobs:
         with:
           name: node-app
 
+      - name: ls
+        run: ls -la
+
+      - name: ls app
+        run: ls -la app
+
       - name: Unzip artifact for deployment
         run: unzip app/release.zip -d app/
 
