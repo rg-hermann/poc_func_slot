@@ -8,6 +8,6 @@ app.http('pocslot', {
 
         const name = request.query.get('name') || await request.text() || 'world';
 
-        return { body: `HelloTeste43, ${name}!` };
+        return { body: `Teste1, ${name}!` };
     }
 });
